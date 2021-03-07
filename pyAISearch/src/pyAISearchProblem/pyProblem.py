@@ -11,3 +11,4 @@ class AISearchProblem(object):
         pass
     def isGoal(self,state):
         pass
+    

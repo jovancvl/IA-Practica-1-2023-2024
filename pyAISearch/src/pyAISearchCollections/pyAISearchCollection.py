@@ -2,23 +2,28 @@
 Created on 15 Feb 2021
 
 @author: Francisco Dominguez
+Default implementation is a priority queue
 '''
+from queue import PriorityQueue
 class AISearchCollection(object):
-    '''
-    classdocs
-    '''
     def __init__(self, params):
+        self.nodes=PriorityQueue()
         '''
         Select a node and remove from the collection
         '''
     def selectNode(self):
-        pass
+        return self.nodes.get()
     def isEmpty(self):
-        pass
+        return self.nodes.empty()
     def insert(self,node):
-        pass
+        priority=node.getF()
+        self.nodes.put(priority,node)
     '''
     Is the node in the collection?
     '''
     def contains(self,node):
-        pass
+        for (_,n) in self.nodes.queue:
+            if n==node:
+                return True
+        return False
+            

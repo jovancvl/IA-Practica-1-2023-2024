@@ -39,6 +39,14 @@ class PathPlanningState():
                     s+="#"
             s+="\n"
         return s
+    ''' return heuristic '''
+    def getH(self):
+        pass
+    ''' compare two states 
+        in this case two states are equal if their location is the same '''
+    def __eq__(self,s):
+        return self.getLocation()=s.getLocation()
+
         
 class PathPlanning(AISearchProblem):
     '''

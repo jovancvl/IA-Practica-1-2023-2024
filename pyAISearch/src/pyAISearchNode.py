@@ -15,7 +15,7 @@ class AISearchNode(object):
             self.depth=father.getDepth()+1
     def setState(self,s):    self.state=s
     def setFather(self,f):   self.father=f
-    def setActoin(self,a):   self.action=a
+    def setAction(self,a):   self.action=a
     def setCostPath(self,c): self.costPath=c
     def setDepth(self,d):    self.depth=d
     def getState(self):    return self.state
@@ -23,3 +23,9 @@ class AISearchNode(object):
     def getAction(self):   return self.action
     def getCostPath(self): return self.costPath
     def getDepth(self):    return self.depth
+    ''' return f=g+h (cost path + heuristic) '''
+    def getF(self):
+        return self.getCostPath()+self.getState().getH()
+    ''' By default two nodes are equal if theirs states are equals '''
+    def __eq__(self,n):
+        return self.getState()==n.getState()

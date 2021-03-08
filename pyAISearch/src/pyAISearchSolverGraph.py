@@ -9,9 +9,10 @@ from pyAISearchNode import AISearchNode
 
 class AISearchSolverGraph(AISearchSolver):
     def __init__(self, problem):
-        super(AISearchSolver).__init__(problem)
+        super().__init__(problem)
         self.frontier=AISearchCollection()
-        self.explored=set()
+        self.explored=[] #set()
+        self.currentNode=None
     def expandIfNotIn(self,currentNode):
         currentState=currentNode.getState()
         for action,state,cost in self.problem.sucessors(currentState):        
@@ -24,13 +25,19 @@ class AISearchSolverGraph(AISearchSolver):
             if self.frontier.contains(node) or node in self.explored:
                 continue
             self.frontier.insert(node)
+            print(state)
+    def getInitNode(self):
+        state=self.problem.getStateInit()
+        node=AISearchNode(state)
+        return node
     def search(self):
-        self.frontier.insert(self.problem.getStateInit())
-        while self.frontier.isEmpty():
-            currentNode=self.frontier.selectNode()
-            currentState=currentNode.getState()
+        self.frontier.insert(self.getInitNode())
+        while not self.frontier.isEmpty():
+            self.currentNode=self.frontier.selectNode()
+            currentState=self.currentNode.getState()
             if self.problem.isGoal(currentState):
                 return True
-            self.explored.add(currentNode)
-            self.expandIfNotIn(currentNode)
+            #self.explored.add(self.currentNode)
+            self.explored.append(self.currentNode)
+            self.expandIfNotIn(self.currentNode)
         return False

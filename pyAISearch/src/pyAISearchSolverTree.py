@@ -11,6 +11,7 @@ class AISearchSolverTree(AISearchSolver):
     def __init__(self, problem):
         super(AISearchSolver).__init__(problem)
         self.frontier=AISearchCollection()
+        self.currentNode=None
     def expand(self,currentNode):
         currentState=currentNode.getState()
         for action,state,cost in self.problem.sucessors(currentState):
@@ -21,13 +22,17 @@ class AISearchSolverTree(AISearchSolver):
             node.setCostPath(currentNode.getCostPath()+cost)
             node.setDepth(currentNode.getDepth()+1)
             self.frontier.insert(node)
+    def getInitNode(self):
+        state=self.problem.getStateInit()
+        node=AISearchNode(state)
+        return node
     def search(self):
-        self.frontier.insert(self.problem.getStateInit())
+        self.frontier.insert(self.getInitNode())
         while self.frontier.isEmpty():
-            currentNode=self.frontier.selectNode()
-            currentState=currentNode.getState()
+            self.currentNode=self.frontier.selectNode()
+            currentState=self.currentNode.getState()
             if self.problem.isGoal(currentState):
                 return True
-            self.expand(currentNode)
+            self.expand(self.currentNode)
         return False
     

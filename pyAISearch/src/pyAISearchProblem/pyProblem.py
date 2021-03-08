@@ -6,6 +6,8 @@ Created on 14 Feb 2021
 class AISearchProblem(object):
     def __init__(self):
         self.stateInit=None
+    def getStateInit(self):
+        pass
     #return a collection of action,state,cost
     def successosrs(self,state):
         pass

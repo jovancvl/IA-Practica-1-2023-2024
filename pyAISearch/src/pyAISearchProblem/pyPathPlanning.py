@@ -73,7 +73,7 @@ class PathPlanning(AISearchProblem):
             if state.notWall(newLocation):
                 return True
         if a=="D":
-            if state.getLocationY()==state.map.shape[0]:
+            if state.getLocationY()==state.map.shape[0]-1:
                 return False
             newLocation=(state.getLocationX(),state.getLocationY()+1)
             if state.notWall(newLocation):
@@ -81,13 +81,13 @@ class PathPlanning(AISearchProblem):
         if a=="L":
             if state.getLocationX()==0:
                 return False
-            newLocation=(state.getLocationX(),state.getLocationX()-1)
+            newLocation=(state.getLocationX()-1,state.getLocationY())
             if state.notWall(newLocation):
                 return True
         if a=="R":
-            if state.getLocationX()==state.map.shape[1]:
+            if state.getLocationX()==state.map.shape[1]-1:
                 return False
-            newLocation=(state.getLocationX(),state.getLocationX()+1)
+            newLocation=(state.getLocationX()+1,state.getLocationY())
             if state.notWall(newLocation):
                 return True
         return False

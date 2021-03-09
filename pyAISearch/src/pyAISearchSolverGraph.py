@@ -11,8 +11,9 @@ class AISearchSolverGraph(AISearchSolver):
     def __init__(self, problem):
         super().__init__(problem)
         self.frontier=AISearchCollection()
-        self.explored=[] #set()
+        self.explored=[]
         self.currentNode=None
+    def getCurrentNode(self): return self.currentNode
     def expandIfNotIn(self,currentNode):
         currentState=currentNode.getState()
         for action,state,cost in self.problem.sucessors(currentState):        
@@ -25,7 +26,6 @@ class AISearchSolverGraph(AISearchSolver):
             if self.frontier.contains(node) or node in self.explored:
                 continue
             self.frontier.insert(node)
-            print(state)
     def getInitNode(self):
         state=self.problem.getStateInit()
         node=AISearchNode(state)
@@ -37,7 +37,6 @@ class AISearchSolverGraph(AISearchSolver):
             currentState=self.currentNode.getState()
             if self.problem.isGoal(currentState):
                 return True
-            #self.explored.add(self.currentNode)
             self.explored.append(self.currentNode)
             self.expandIfNotIn(self.currentNode)
         return False

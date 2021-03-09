@@ -6,7 +6,6 @@ Created on 7 Mar 2021
 from pyAISearchProblem.pyPathPlanning import PathPlanning,PathPlanningState
 from pyAISearchSolverGraph import AISearchSolverGraph
 if __name__ == '__main__':
-    pps=PathPlanningState()
     pp=PathPlanning()
     sg=AISearchSolverGraph(pp)
     found=sg.search()
@@ -14,4 +13,7 @@ if __name__ == '__main__':
         print("Solution not found")
     else:
         print("The solution is,....")
-    print(pps)
+        cn=sg.getCurrentNode()
+        while cn.getFather():
+            print(cn.getState())
+            cn=cn.getFather()

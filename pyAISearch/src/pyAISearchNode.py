@@ -29,3 +29,5 @@ class AISearchNode(object):
     ''' By default two nodes are equal if theirs states are equals '''
     def __eq__(self,n):
         return self.getState()==n.getState()
+    def __lt__(self,n):
+        return self.getF()<n.getF()

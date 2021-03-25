@@ -7,8 +7,9 @@ import math
 import copy
 import numpy as np
 from pyAISearchProblem.pyProblem import AISearchProblem
+from pyAISearchProblem.pyState import AISearchState
 
-class PathPlanningState():
+class PathPlanningState(AISearchState):
     def __init__(self):
         self.map=np.array([
             [0,0,1,0,0,0,0,0,0,0],

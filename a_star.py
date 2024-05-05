@@ -13,8 +13,8 @@ h = number of elements not placed correctly (if the block below it is incorrect)
 1 list of visited states
 1 list of states to visit
 
-Block class that contains info about the block (a, b, c) and information around it (above, below it)
-State class that inherits the block class and adds f, g and h to it, as well as parent state
+Block class that contains info about the block (a, b, c) and what is below it
+State class that inherits the block class and adds f, g and h to it, as well as parent state and action taken since the parent state
 
 possible actions are:
     put block x below block y
@@ -22,6 +22,8 @@ possible actions are:
             a) y isn't below a block already
             b) x isn't below a block already
     put ground below block x
+        can only put ground below x if:
+            a) x isn't below one of the other 2 blocks
 
 """
 from queue import PriorityQueue

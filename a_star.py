@@ -25,67 +25,80 @@ possible actions are:
 
 """
 from queue import PriorityQueue
-
-def is_goal(state):
-    return state["A"] == "B" and state["B"] == "C" and state["C"] == "table"
+from state import *
 
 
-def can_take_action(state):
+def parse_input(below_a: str, below_b: str, below_c: str):
+    a = Block(Type.A, Type.TABLE)
+    b = Block(Type.B, Type.TABLE)
+    c = Block(Type.C, Type.TABLE)
 
-
-
-def a_star():
-    if is_goal(state):
-        show_state(state)
+    if below_a == "B":
+        a.set_below(Type.B)
+    elif below_a == "C":
+        a.set_below(Type.C)
     else:
+        a.set_below(Type.TABLE)
 
-def parse_input(data):
-    result = {"A": data[0][1], "B": data[1][1], "C": data[2][1], "parent": None, "g": 0}
-    result["h*"] = get_h(result)
-    result["f*"] = result["g"] + result["h*"]
-    return result
+    if below_b == "A":
+        b.set_below(Type.A)
+    elif below_b == "C":
+        b.set_below(Type.C)
+    else:
+        b.set_below(Type.TABLE)
 
-def show_state(data: dict):
-    print("Step: ", data["g"])
-    print("A |", data["A"])
-    print("B |", data["B"])
-    print("C |", data["C"])
-    print()
+    if below_c == "A":
+        c.set_below(Type.A)
+    elif below_c == "B":
+        c.set_below(Type.B)
+    else:
+        c.set_below(Type.TABLE)
+
+    return State(a, b, c, 0, None, None)
 
 
-def get_h(data: dict):
-    count = 0
-    if data["A"] != "B":
-        count += 1
-    if data["B"] != "C":
-        count += 1
-    if data["C"] != "table":
-        count += 1
-    return count
+def state_in_q(s: State, q: PriorityQueue):
+    for (priority, aux_state) in q.queue:
+        if s == aux_state:
+            return True
+    return False
+
+
+def expand(s: State, v: list, q: PriorityQueue):
+    successors = s.successors()
+    for new_state in successors:
+        if state_in_q(new_state, q) or new_state in v:
+            continue
+        q.put((new_state.get_f(), new_state))
+
+
+def a_star(s: State, v: list, q: PriorityQueue) -> State:
+    q.put((s.get_f(), s))
+
+    while not q.empty():
+        priority, curr_state = q.get()
+        if curr_state.is_goal():
+            return curr_state
+        v.append(curr_state)
+        expand(curr_state, v, q)
+
+    raise Exception("No solution found")
 
 
 if __name__ == '__main__':
-    state = {
-        "A": "table",
-        "B": "table",
-        "C": "table",
-        "parent": None,
-        "g": 0,
-        "h*": 0,
-        "f*": 0
-    }
-    previous_states = []
-    q = PriorityQueue()  # tuple (priority, state)
-    print("Input the initial state 1 line per element indicating the element and what is below it")
-    print("Example:\n A table\n B C\n C table")
-    print("This is the example state:")
-    print("  B\nA C\n")
+    visited = list()
+    queueueue = PriorityQueue()
 
-    raw_data = []
-    for i in range(3):
-        element, what_is_below = input().strip().split()
-        raw_data.append((element, what_is_below))
+    print("What element is below A? B C or T")
+    below_a = input()
+    print("What element is below B? A C or T")
+    below_b = input()
+    print("What element is below C? A B or T")
+    below_c = input()
 
-    state = parse_input(raw_data)
+    init_state = parse_input(below_a.upper(), below_b.upper(), below_c.upper())
+    #init_state = parse_input("B", "TABLE", "A")
+    #init_state.show_state()
+    sol = a_star(init_state, visited, queueueue)
+    sol.show_path()
 
-    show_state(state)

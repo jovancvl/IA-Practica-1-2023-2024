@@ -25,8 +25,13 @@ possible actions are:
         can only put ground below x if:
             a) x isn't below one of the other 2 blocks
 
+at first only PriorityQueue works
+    DFS - stack / LIFO
+    BFS - queue / FIFO
+
+
 """
-from queue import PriorityQueue
+from queue import PriorityQueue, LifoQueue, Queue
 from state import *
 
 
@@ -59,30 +64,67 @@ def parse_input(below_a: str, below_b: str, below_c: str):
     return State(a, b, c, 0, None, None)
 
 
-def state_in_q(s: State, q: PriorityQueue):
-    for (priority, aux_state) in q.queue:
-        if s == aux_state:
-            return True
-    return False
+def state_in_q(s: State, q):
+    if type(q) == PriorityQueue:
+        for (priority, aux_state) in q.queue:
+            if s == aux_state:
+                return True
+        return False
+    else:
+        for aux_state in q.queue:
+            if s == aux_state:
+                return True
+        return False
+
+def add_to_q(s: State, q):
+    if type(q) == PriorityQueue:
+        q.put((s.get_f(), s))
+    else:
+        q.put(s)
 
 
-def expand(s: State, v: list, q: PriorityQueue):
+def get_from_q(q):
+    if type(q) == PriorityQueue:
+        p, s = q.get()
+        return p, s
+    else:
+        return None, q.get()
+
+
+def expand(s: State, v: list, q):
     successors = s.successors()
     for new_state in successors:
         if state_in_q(new_state, q) or new_state in v:
             continue
-        q.put((new_state.get_f(), new_state))
+        add_to_q(new_state, q)
 
 
-def a_star(s: State, v: list, q: PriorityQueue) -> State:
-    q.put((s.get_f(), s))
+def a_star(s: State, v: list, q, depth_limit: int) -> State:
+    # add state to queue
+    add_to_q(s, q)
 
     while not q.empty():
-        priority, curr_state = q.get()
-        if curr_state.is_goal():
-            return curr_state
+        # get next state
+        _, curr_state = get_from_q(q)
+        if curr_state.is_goal() or curr_state.g == depth_limit:
+                return curr_state
+
         v.append(curr_state)
         expand(curr_state, v, q)
+
+        print("---------------------------------------------------\nSTEP", curr_state.g)
+
+        print("Visited list:")
+        for aux in v:
+            aux.show_state()
+        print()
+        print("Expanded list:")
+        if type(q) == PriorityQueue:
+            for (_, aux) in q.queue:
+                aux.show_state()
+        else:
+            for aux in q.queue:
+                aux.show_state()
 
     raise Exception("No solution found")
 
@@ -90,6 +132,9 @@ def a_star(s: State, v: list, q: PriorityQueue) -> State:
 if __name__ == '__main__':
     visited = list()
     queueueue = PriorityQueue()
+    #queueueue = Queue()
+    #queueueue = LifoQueue()
+    d_l = -1
 
     print("What element is below A? B C or T")
     below_a = input()
@@ -99,8 +144,8 @@ if __name__ == '__main__':
     below_c = input()
 
     init_state = parse_input(below_a.upper(), below_b.upper(), below_c.upper())
-    #init_state = parse_input("B", "TABLE", "A")
-    #init_state.show_state()
-    sol = a_star(init_state, visited, queueueue)
+    # init_state = parse_input("B", "TABLE", "A")
+    # init_state.show_state()
+    sol = a_star(init_state, visited, queueueue, d_l)
+    print("Solution is:")
     sol.show_path()
-

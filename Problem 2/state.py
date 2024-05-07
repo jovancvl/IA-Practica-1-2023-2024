@@ -9,9 +9,13 @@ class State:
         self.parent = parent
         self.MIN_POS = 0
         self.MAX_POS = 4
+        self.value = self.calculate_value()
 
     def is_win(self):
         return self.p1.pos == self.MAX_POS or self.p2.pos == self.MIN_POS
+
+    def set_value(self, value):
+        self.value = value
 
     def calculate_value(self):
         d_min = self.p2.pos
@@ -61,12 +65,6 @@ class State:
 
         return successors
 
-    def show_state(self):
-        s = ["_"] * 5
-        s[self.p1.pos] = "A"
-        s[self.p2.pos] = "B"
-        print("[", *s, "]")
-
     def __str__(self):
         s = ["_"] * 5
         s[self.p1.pos] = "A"
@@ -75,4 +73,5 @@ class State:
         for a in s:
             output += a + " "
         output += "]"
+        output += " e = " + str(self.value)
         return output

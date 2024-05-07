@@ -3,40 +3,42 @@ from state import *
 
 def show_successors_of_state(s: State, successors: list[State]):
     print("Turn", s.turn, "with State:")
-    s.show_state()
+    print(s)
     print("Possible successors are:")
     for aux in successors:
-        aux.show_state()
+        print(aux)
     print()
 
 
-def minimax_alphabeta(curr_depth: int, max_depth: int, s: State, alpha: int, beta: int):
+def minimax(curr_depth: int, max_depth: int, s: State):
     if s.is_win() or curr_depth == max_depth:
         return s.calculate_value()
     elif s.turn == "A":
         """
         MAX function
         """
+        value = -1000
         successors = s.successors()
-        show_successors_of_state(s, successors)
-        for aux in successors:
-            alpha = max(alpha, minimax_alphabeta(curr_depth + 1, max_depth, aux, alpha, beta))
-            if alpha > beta:
-                return alpha
 
-        return alpha
+        for aux in successors:
+            value = max(value, minimax(curr_depth + 1, max_depth, aux))
+
+        s.set_value(value)
+        show_successors_of_state(s, successors)
+        return value
     else:
         """
         MIN function
         """
+        value = 1000
         successors = s.successors()
-        show_successors_of_state(s, successors)
-        for aux in successors:
-            beta = min(beta, minimax_alphabeta(curr_depth + 1, max_depth, aux, alpha, beta))
-            if alpha > beta:
-                return beta
 
-        return beta
+        for aux in successors:
+            value = min(value, minimax(curr_depth + 1, max_depth, aux))
+
+        s.set_value(value)
+        show_successors_of_state(s, successors)
+        return value
 
 
 if __name__ == '__main__':
@@ -53,4 +55,4 @@ if __name__ == '__main__':
     initial_state = State(p1, p2, "A", None)
     # initial_state.show_state()
     # print(initial_state)
-    minimax_alphabeta(0, m_d, initial_state, -1000, 1000)
+    minimax(0, m_d, initial_state)
